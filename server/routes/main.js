@@ -16,7 +16,7 @@ router.get("/articles", async (req, res) => {
 // GET article by ID
 router.get("/articles/:id", async (req, res) => {
   try {
-    const article = await Article.findOne({ id: req.params.id });
+    const article = await Article.findOne({ _id: req.params.id });
     if (!article) return res.status(404).json({ error: "Article not found" });
     res.json(article);
   } catch (error) {
@@ -41,7 +41,7 @@ router.post("/articles", async (req, res) => {
 router.put("/articles/:id", async (req, res) => {
   try {
     const updated = await Article.findOneAndUpdate(
-      { id: req.params.id },
+      { _id: req.params.id },
       req.body,
       {
         new: true,
