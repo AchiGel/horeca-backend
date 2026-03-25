@@ -13,6 +13,17 @@ router.get("/articles", async (req, res) => {
   }
 });
 
+// GET article by slug
+router.get("/articles/slug/:slug", async (req, res) => {
+  try {
+    const article = await Article.findOne({ slug: req.params.slug });
+    if (!article) return res.status(404).json({ error: "Article not found" });
+    res.json(article);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch article" });
+  }
+});
+
 // GET article by ID
 router.get("/articles/:id", async (req, res) => {
   try {
@@ -27,6 +38,12 @@ router.get("/articles/:id", async (req, res) => {
 // POST new article
 router.post("/articles", async (req, res) => {
   try {
+    const { slug } = req.body;
+    if (!slug) return res.status(400).json({ error: "Slug is required" });
+
+    const exists = await Article.findOne({ slug });
+    if (exists) return res.status(400).json({ error: "Slug already exists" });
+
     const newArticle = new Article(req.body);
     const saved = await newArticle.save();
     res.status(201).json(saved);
@@ -45,7 +62,7 @@ router.put("/articles/:id", async (req, res) => {
       req.body,
       {
         new: true,
-      }
+      },
     );
     if (!updated) return res.status(404).json({ error: "Article not found" });
     res.json(updated);
