@@ -71,10 +71,36 @@ router.put("/articles/:id", async (req, res) => {
   }
 });
 
+// PUT update article by slug
+router.put("/articles/slug/:slug", async (req, res) => {
+  try {
+    const updated = await Article.findOneAndUpdate(
+      { slug: req.params.slug },
+      req.body,
+      { new: true },
+    );
+    if (!updated) return res.status(404).json({ error: "Article not found" });
+    res.json(updated);
+  } catch (error) {
+    res.status(400).json({ error: "Failed to update article" });
+  }
+});
+
 // DELETE article
 router.delete("/articles/:id", async (req, res) => {
   try {
     const deleted = await Article.findOneAndDelete({ _id: req.params.id });
+    if (!deleted) return res.status(404).json({ error: "Article not found" });
+    res.json({ message: "Article deleted" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete article" });
+  }
+});
+
+// DELETE article by slug
+router.delete("/articles/slug/:slug", async (req, res) => {
+  try {
+    const deleted = await Article.findOneAndDelete({ slug: req.params.slug });
     if (!deleted) return res.status(404).json({ error: "Article not found" });
     res.json({ message: "Article deleted" });
   } catch (error) {
