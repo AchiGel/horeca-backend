@@ -8,14 +8,7 @@ const ArticleSchema = new mongoose.Schema(
     body: { type: [String], required: true },
     categories: {
       type: [String],
-      enum: [
-        "restaurants",
-        "hotels",
-        "cafes",
-        "catering",
-        "management",
-        "trends",
-      ],
+      enum: ["news", "hotels", "gastronomy", "business-and-tech", "interviews"],
       required: true,
     },
     imageUrl: { type: String, required: true },
